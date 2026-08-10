@@ -12,7 +12,6 @@ public class Task {
     private String title;
     private String description;
     private LocalDate dueDate;
-    private Quadrant quadrant;
     private Boolean isSupportRequired;
     private List<SubTask> subTasks;
     private List<Comment> comments;

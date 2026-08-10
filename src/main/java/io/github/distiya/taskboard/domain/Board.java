@@ -9,7 +9,10 @@ import java.util.UUID;
 public class Board {
 
     private UUID userId;
-    private List<Task> tasks;
+    private List<Task> selectiveInvestTasks;
+    private List<Task> doFirstDriveDailyTasks;
+    private List<Task> workInTasks;
+    private List<Task> ignoreTasks;
     private List<GenericTask> genericTasks;
 
 }
