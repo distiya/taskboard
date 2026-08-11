@@ -252,7 +252,9 @@
     showToast('Backup downloaded');
   };
   TB.shareBoard = function () {
-    const url = window.location.origin + '/member-board/' + document.body.dataset.userId;
+    const uid = (window.__serverBoard && window.__serverBoard.userId) || document.body.dataset.userId || '';
+    if (!uid) { showToast('No user ID available'); return; }
+    const url = window.location.origin + '/member-board/' + uid;
     navigator.clipboard.writeText(url).then(() => showToast('Link copied!')).catch(() => showToast('Copy failed'));
   };
 

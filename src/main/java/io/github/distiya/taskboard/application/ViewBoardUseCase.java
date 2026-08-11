@@ -18,6 +18,7 @@ public class ViewBoardUseCase {
         Board board = boardRepository.findBoardByUserId(userid);
         if(board == null){
             board = new Board();
+            board.setUserId(userid);
             board.setSelectiveInvestTasks(new ArrayList<>());
             board.setDoFirstDriveDailyTasks(new ArrayList<>());
             board.setWorkInTasks(new ArrayList<>());

@@ -57,7 +57,6 @@ public class BoardController {
                 (CustomUserDetails) authentication.getPrincipal();
         board.setUserId(principal.getUserId());
         updateBoardUseCase.execute(board);
-        System.out.println("Saved");
         return "OK";
     }
 }

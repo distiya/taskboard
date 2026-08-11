@@ -3,11 +3,154 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="2x2 Task Planner - Member Board View">
     <title>Member Board</title>
     <link rel="stylesheet" th:href="@{/css/theme.css}">
     <link rel="stylesheet" th:href="@{/css/board.css}">
 </head>
 <body>
+
+<!-- Header -->
+<header class="board-header">
+    <div class="board-title">
+        <div class="icon">⊞</div>
+        MEMBER BOARD
+        <span class="task-overview" style="margin-left:8px">View Only</span>
+    </div>
+    <div class="header-right">
+        <span class="task-overview" id="task-overview">0 active tasks</span>
+        <a th:href="@{/my-board}" class="header-btn btn-sync" style="text-decoration:none">← My Board</a>
+    </div>
+</header>
+
+<!-- Layout: Grid + Side Panel -->
+<div class="board-layout">
+
+<!-- Board Grid -->
+<main class="board-grid">
+
+    <!-- Top-Left: Selectively Invest -->
+    <section class="quadrant q-selective">
+        <div class="q-header">
+            <div class="q-title-wrap">
+                <div class="q-title">Selectively Invest</div>
+                <div class="q-subtitle">High Value, High Effort</div>
+            </div>
+        </div>
+        <div class="q-list" id="list-selectiveInvest"></div>
+    </section>
+
+    <!-- Top-Right: Do First / Drive Daily -->
+    <section class="quadrant q-dofirst">
+        <div class="q-header">
+            <div class="q-title-wrap">
+                <div class="q-title">Do First / Drive Daily</div>
+                <div class="q-subtitle">High Value, Low Effort</div>
+            </div>
+        </div>
+        <div class="q-list" id="list-doFirstDriveDaily"></div>
+    </section>
+
+    <!-- Bottom-Left: Ignore / Delay -->
+    <section class="quadrant q-ignore">
+        <div class="q-header">
+            <div class="q-title-wrap">
+                <div class="q-title">Ignore / Delay</div>
+                <div class="q-subtitle">Low Value, High Effort</div>
+            </div>
+        </div>
+        <div class="q-list" id="list-ignore"></div>
+    </section>
+
+    <!-- Bottom-Right: Work In -->
+    <section class="quadrant q-workin">
+        <div class="q-header">
+            <div class="q-title-wrap">
+                <div class="q-title">Work In</div>
+                <div class="q-subtitle">Low Value, Low Effort</div>
+            </div>
+        </div>
+        <div class="q-list" id="list-workIn"></div>
+    </section>
+
+</main>
+
+<!-- Side Panel -->
+<aside class="side-panel" id="side-panel">
+    <button class="sp-toggle" id="sp-toggle" onclick="MB.toggleSidePanel()">◂</button>
+    <div class="sp-tabs">
+        <button class="sp-tab active" data-tab="priorities" onclick="MB.switchTab('priorities')">Priorities</button>
+        <button class="sp-tab" data-tab="support" onclick="MB.switchTab('support')">Support</button>
+        <button class="sp-tab" data-tab="parking" onclick="MB.switchTab('parking')">Parking</button>
+    </div>
+
+    <!-- Priorities Tab -->
+    <div class="sp-content" id="tab-priorities">
+        <div class="sp-section-title">Upcoming Subtasks</div>
+        <div id="priorities-list" class="sp-list"></div>
+    </div>
+
+    <!-- Support Tab -->
+    <div class="sp-content" id="tab-support" style="display:none">
+        <div class="sp-section-title">Support Needed</div>
+        <div id="support-list" class="sp-list"></div>
+    </div>
+
+    <!-- Parking Tab -->
+    <div class="sp-content" id="tab-parking" style="display:none">
+        <div class="sp-section-title">Parking Lot</div>
+        <div id="parking-list" class="sp-list"></div>
+    </div>
+</aside>
+
+</div><!-- /board-layout -->
+
+<!-- Read-only Task Modal -->
+<div class="modal-overlay" id="modal-overlay" onclick="if(event.target===this)MB.closeModal()">
+    <div class="modal">
+        <h3>Task Details</h3>
+
+        <div class="form-group">
+            <label>Title</label>
+            <div class="form-input" id="modal-title" style="background:var(--bg);cursor:default"></div>
+        </div>
+
+        <div class="form-group">
+            <label>Description</label>
+            <div class="form-input" id="modal-desc" style="background:var(--bg);cursor:default;min-height:60px;white-space:pre-wrap"></div>
+        </div>
+
+        <div style="display:flex;gap:16px">
+            <div class="form-group" style="flex:1">
+                <label>Due Date</label>
+                <div class="form-input" id="modal-due" style="background:var(--bg);cursor:default"></div>
+            </div>
+            <div class="form-group" style="flex:1">
+                <label>Support Needed</label>
+                <div class="form-input" id="modal-support" style="background:var(--bg);cursor:default"></div>
+            </div>
+        </div>
+
+        <div class="section-title">Sub Tasks</div>
+        <div id="modal-subtasks"></div>
+
+        <div class="section-title">Comments</div>
+        <div id="modal-comments"></div>
+
+        <div class="modal-actions">
+            <div></div>
+            <div class="modal-actions-right">
+                <button class="btn-cancel" onclick="MB.closeModal()">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Seed from server data -->
+<script th:inline="javascript">
+    window.__serverBoard = /*[[${board}]]*/ null;
+</script>
+<script th:src="@{/js/member-board.js}"></script>
 
 </body>
 </html>
