@@ -6,6 +6,6 @@ import lombok.Data;
 public class GenericTask {
 
     private String title;
-    private GenericTaskType type;
+    private Boolean completed;
 
 }

@@ -18,3 +18,22 @@ When click on each tile task window will popup
 6. There should be a section to add comments and show already added comments for this task where most recent comment will be at the top. Comment message and created and modified date will be shown
 7. There should be a button to delete the task, cancel button to close the view and save button to make save. This save should be browser save
 
+# Board view
+
+1. There should be a header in which i says 2x2 TASK PLANNER on the left and there will be Task overview to say how many active tasks. There shoul be 3 buttons sync, backup, and share
+2. There should be four quadreants, top left quadrant title is SELECTIVELY INVEST and sub title is HIGH VALUE, HIGH EFFORT and top right quadrant title is DO FIRST / DRIVE DAILY and subtitle is HIGH VALUE, LOW EFFORT and Bottom left quadrant tite is IGNORE / DELAY and subtitle is LOW VALUE, HIGH EFFORT and bottom right quadrant title is WORK IN while subtitle is LOW VALUE, LOW EFFORT
+
+Please read the source code in follwing files to understand the domain objects
+
+@./src/main/java/io/github/distiya/taskboard/domain/Board.java
+@./src/main/java/io/github/distiya/taskboard/domain/Comment.java
+@./src/main/java/io/github/distiya/taskboard/domain/GenericTask.java
+@./src/main/java/io/github/distiya/taskboard/domain/GenericTaskType.java
+@./src/main/java/io/github/distiya/taskboard/domain/SubTask.java
+@./src/main/java/io/github/distiya/taskboard/domain/Task.java
+
+Then read the implementation
+
+@./src/main/java/io/github/distiya/taskboard/infrastructure/BoardController.java
+
+Then complete the thymeleaf template implementation to match above requirement. the thymeleaf file can be  @./src/main/resources/templates/my-board.html. Please edit the same file.

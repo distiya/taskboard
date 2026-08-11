@@ -13,6 +13,7 @@ public class Board {
     private List<Task> doFirstDriveDailyTasks;
     private List<Task> workInTasks;
     private List<Task> ignoreTasks;
-    private List<GenericTask> genericTasks;
+    private List<GenericTask> supportTasks;
+    private List<GenericTask> parkingTasks;
 
 }

@@ -18,8 +18,12 @@ public class ViewBoardUseCase {
         Board board = boardRepository.findBoardByUserId(userid);
         if(board == null){
             board = new Board();
-            board.setTasks(new ArrayList<>());
-            board.setGenericTasks(new ArrayList<>());
+            board.setSelectiveInvestTasks(new ArrayList<>());
+            board.setDoFirstDriveDailyTasks(new ArrayList<>());
+            board.setWorkInTasks(new ArrayList<>());
+            board.setIgnoreTasks(new ArrayList<>());
+            board.setSupportTasks(new ArrayList<>());
+            board.setParkingTasks(new ArrayList<>());
         }
         return board;
     }

@@ -17,5 +17,6 @@ public class Task {
     private List<Comment> comments;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private Boolean completed;
 
 }

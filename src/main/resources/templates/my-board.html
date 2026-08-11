@@ -1,10 +1,200 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="2x2 Task Planner Dashboard - Organize tasks by value and effort">
+    <meta name="_csrf" th:content="${_csrf.token}">
+    <meta name="_csrf_header" th:content="${_csrf.headerName}">
+    <title>2×2 Task Planner</title>
+    <link rel="stylesheet" th:href="@{/css/theme.css}">
+    <link rel="stylesheet" th:href="@{/css/board.css}">
 </head>
-<body>
+<body th:attr="data-user-id=${board.userId}">
+
+<!-- Header -->
+<header class="board-header">
+    <div class="board-title">
+        <div class="icon">⊞</div>
+        2×2 TASK PLANNER
+    </div>
+    <div class="header-right">
+        <span class="task-overview" id="task-overview">0 active tasks</span>
+        <button class="header-btn btn-sync" onclick="TB.syncBoard()">⟳ Sync</button>
+        <button class="header-btn btn-backup" onclick="TB.backupBoard()">⤓ Backup</button>
+        <button class="header-btn btn-share" onclick="TB.shareBoard()">⎘ Share</button>
+    </div>
+</header>
+
+<!-- Layout: Grid + Side Panel -->
+<div class="board-layout">
+
+<!-- Board Grid -->
+<main class="board-grid">
+
+    <!-- Top-Left: Selectively Invest -->
+    <section class="quadrant q-selective" id="q-selectiveInvest">
+        <div class="q-header">
+            <div class="q-title-wrap">
+                <div class="q-title">Selectively Invest</div>
+                <div class="q-subtitle">High Value, High Effort</div>
+            </div>
+            <button class="q-add-btn" onclick="TB.openModal('selectiveInvest',-1)">+</button>
+        </div>
+        <div class="q-list" id="list-selectiveInvest"></div>
+    </section>
+
+    <!-- Top-Right: Do First / Drive Daily -->
+    <section class="quadrant q-dofirst" id="q-doFirstDriveDaily">
+        <div class="q-header">
+            <div class="q-title-wrap">
+                <div class="q-title">Do First / Drive Daily</div>
+                <div class="q-subtitle">High Value, Low Effort</div>
+            </div>
+            <button class="q-add-btn" onclick="TB.openModal('doFirstDriveDaily',-1)">+</button>
+        </div>
+        <div class="q-list" id="list-doFirstDriveDaily"></div>
+    </section>
+
+    <!-- Bottom-Left: Ignore / Delay -->
+    <section class="quadrant q-ignore" id="q-ignore">
+        <div class="q-header">
+            <div class="q-title-wrap">
+                <div class="q-title">Ignore / Delay</div>
+                <div class="q-subtitle">Low Value, High Effort</div>
+            </div>
+            <button class="q-add-btn" onclick="TB.openModal('ignore',-1)">+</button>
+        </div>
+        <div class="q-list" id="list-ignore"></div>
+    </section>
+
+    <!-- Bottom-Right: Work In -->
+    <section class="quadrant q-workin" id="q-workIn">
+        <div class="q-header">
+            <div class="q-title-wrap">
+                <div class="q-title">Work In</div>
+                <div class="q-subtitle">Low Value, Low Effort</div>
+            </div>
+            <button class="q-add-btn" onclick="TB.openModal('workIn',-1)">+</button>
+        </div>
+        <div class="q-list" id="list-workIn"></div>
+    </section>
+
+</main>
+
+<!-- Side Panel -->
+<aside class="side-panel" id="side-panel">
+    <button class="sp-toggle" id="sp-toggle" onclick="TB.toggleSidePanel()">◂</button>
+    <div class="sp-tabs">
+        <button class="sp-tab active" data-tab="priorities" onclick="TB.switchTab('priorities')">Priorities</button>
+        <button class="sp-tab" data-tab="support" onclick="TB.switchTab('support')">Support</button>
+        <button class="sp-tab" data-tab="parking" onclick="TB.switchTab('parking')">Parking</button>
+    </div>
+
+    <!-- Priorities Tab -->
+    <div class="sp-content" id="tab-priorities">
+        <div class="sp-section-title">Upcoming Subtasks</div>
+        <div id="priorities-list" class="sp-list"></div>
+    </div>
+
+    <!-- Support Tab -->
+    <div class="sp-content" id="tab-support" style="display:none">
+        <div class="sp-section-title">Support Needed</div>
+        <div class="sp-add-row">
+            <input type="text" class="form-input" id="support-input" placeholder="Add support task…"
+                   onkeydown="if(event.key==='Enter'){TB.addGeneric('support');event.preventDefault()}">
+        </div>
+        <div id="support-list" class="sp-list"></div>
+    </div>
+
+    <!-- Parking Tab -->
+    <div class="sp-content" id="tab-parking" style="display:none">
+        <div class="sp-section-title">Parking Lot</div>
+        <div class="sp-add-row">
+            <input type="text" class="form-input" id="parking-input" placeholder="Add parking item…"
+                   onkeydown="if(event.key==='Enter'){TB.addGeneric('parking');event.preventDefault()}">
+        </div>
+        <div id="parking-list" class="sp-list"></div>
+    </div>
+</aside>
+
+</div><!-- /board-layout -->
+
+<!-- Task Modal -->
+<div class="modal-overlay" id="modal-overlay" onclick="if(event.target===this)TB.closeModal()">
+    <div class="modal">
+        <h3>Task Details</h3>
+
+        <!-- Title -->
+        <div class="form-group">
+            <label for="modal-title">Title</label>
+            <input type="text" class="form-input" id="modal-title" placeholder="Task title…">
+        </div>
+
+        <!-- Description -->
+        <div class="form-group">
+            <label for="modal-desc">Description</label>
+            <textarea class="form-input" id="modal-desc" placeholder="Describe the task…"></textarea>
+        </div>
+
+        <!-- Due Date -->
+        <div class="form-group">
+            <label for="modal-due">Due Date</label>
+            <input type="date" class="form-input" id="modal-due">
+        </div>
+
+        <!-- Support Required -->
+        <div class="checkbox-row">
+            <input type="checkbox" id="modal-support">
+            <label for="modal-support">Support needed</label>
+        </div>
+
+        <!-- Sub Tasks -->
+        <div class="section-title">Sub Tasks</div>
+        <div class="subtask-add">
+            <input type="text" class="form-input" id="subtask-input" placeholder="Add a subtask…"
+                   onkeydown="if(event.key==='Enter'){TB.addSubTask();event.preventDefault()}">
+            <button onclick="TB.addSubTask()">+ Add</button>
+        </div>
+        <div id="subtask-list"></div>
+        <div id="subtask-done" style="display:none"></div>
+
+        <!-- Comments -->
+        <div class="section-title">Comments</div>
+        <div class="comment-add">
+            <textarea class="form-input" id="comment-input" placeholder="Write a comment…"
+                      onkeydown="if(event.key==='Enter'&&!event.shiftKey){TB.addComment();event.preventDefault()}"></textarea>
+            <button onclick="TB.addComment()">Post</button>
+        </div>
+        <div id="comment-list"></div>
+
+        <!-- Actions -->
+        <div class="modal-actions">
+            <div class="modal-actions-left">
+                <button class="btn-delete" id="btn-delete-task" onclick="TB.deleteTask()">Delete</button>
+            </div>
+            <div class="modal-actions-right">
+                <button class="btn-cancel" onclick="TB.closeModal()">Cancel</button>
+                <button class="btn-save" onclick="TB.saveTask()">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- Hidden sync form -->
+<form id="sync-form" th:action="@{/my-board}" method="post" style="display:none">
+    <input type="hidden" name="boardJson" id="sync-data">
+    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+</form>
+
+<!-- Seed from server data -->
+<script th:inline="javascript">
+    window.__serverBoard = /*[[${board}]]*/ null;
+</script>
+<script th:src="@{/js/board.js}"></script>
 
 </body>
 </html>

@@ -8,10 +8,7 @@ import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
@@ -54,11 +51,13 @@ public class BoardController {
     }
 
     @PostMapping("/my-board")
-    public String syncMyBoard(Authentication authentication, @ModelAttribute("board") Board board){
+    @ResponseBody
+    public String syncMyBoard(Authentication authentication, @RequestBody Board board){
         CustomUserDetails principal =
                 (CustomUserDetails) authentication.getPrincipal();
         board.setUserId(principal.getUserId());
         updateBoardUseCase.execute(board);
-        return "redirect:/my-board";
+        System.out.println("Saved");
+        return "OK";
     }
 }
